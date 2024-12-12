@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Expense Category</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div class="container">
+    <h1>Create New Expense Category</h1>
+    <form id="create-category-form" onsubmit="submitCategory(event)">
+        <label for="category-name">Category Name:</label>
+        <input type="text" id="category-name" name="categoryName" required>
+        
+        <button type="submit">Create Category</button>
+    </form>
+    <div id="feedback"></div>
+</div>
+
+<script>
+    function renderCreateCategoryForm() {
+        // Assume that this function should dynamically create
+        // the form for rendering. This is only a placeholder since 
+        // HTML is already being rendered statically here.
+    }
+
+    function validateCategoryInput() {
+        const categoryName = document.getElementById('category-name').value;
+
+        if (categoryName.trim() === "") {
+            document.getElementById('feedback').textContent = "Category name cannot be empty.";
+            return false;
+        }
+
+        if (categoryName.length < 3) {
+            document.getElementById('feedback').textContent = "Category name must be at least 3 characters long.";
+            return false;
+        }
+
+        return true;
+    }
+
+    async function submitCategory(event) {
+        event.preventDefault();
+
+        if (!validateCategoryInput()) {
+            return;
+        }
+        
+        const categoryName = document.getElementById('category-name').value;
+
+        try {
+            const response = await fetch('/api/categories', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ categoryName })
+            });
+
+            if (!response.ok) {
+                throw new Error('Network response was not ok ' + response.statusText);
+            }
+
+            const data = await response.json();
+
+            if (data.status === 'SUCCESS') {
+                document.getElementById('feedback').textContent = "Category created successfully!";
+                document.getElementById('create-category-form').reset();
+            } else {
+                document.getElementById('feedback').textContent = "Failed to create category: " + data.message;
+            }
+        } catch (error) {
+            document.getElementById('feedback').textContent = "Error: " + error.message;
+        }
+    }
+</script>
+
+</body>
+</html>
