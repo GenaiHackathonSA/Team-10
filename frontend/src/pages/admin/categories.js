@@ -15,6 +15,7 @@ import CategoryForm from "../../components/admin/CategoryForm";
 function AdminCategoriesManagement() {
     const [data, isFetching] = useCategories([]);
     const [showForm, setShowForm] = useState(false);
+    const [editingCategory, setEditingCategory] = useState(null);
 
     const disableOrEnable = async (categoryId) => {
         await AdminService.disableOrEnableCategory(categoryId).then(
@@ -31,7 +32,13 @@ function AdminCategoriesManagement() {
 
     const handleFormSuccess = () => {
         setShowForm(false);
+        setEditingCategory(null);
         window.location.reload();
+    };
+
+    const handleEdit = (category) => {
+        setEditingCategory(category);
+        setShowForm(true);
     };
 
     return (
@@ -41,13 +48,13 @@ function AdminCategoriesManagement() {
             <button onClick={() => setShowForm(!showForm)} className="button">
                 {showForm ? 'Hide Form' : 'Add New Category'}
             </button>
-            {showForm && <CategoryForm onSuccess={handleFormSuccess} />}
+            {showForm && <CategoryForm onSuccess={handleFormSuccess} category={editingCategory} />}
             {isFetching && <Loading />}
             {!isFetching && data.length === 0 && <Info text={"No categories found!"} />}
             {!isFetching && data.length !== 0 && (
                 <table>
                     <CategoriesTableHeader />
-                    <CategoriesTableBody data={data} disableOrEnable={disableOrEnable} />
+                    <CategoriesTableBody data={data} disableOrEnable={disableOrEnable} onEdit={handleEdit} />
                 </table>
             )}
         </Container>
@@ -68,7 +75,7 @@ function CategoriesTableHeader() {
     );
 }
 
-function CategoriesTableBody({ data, disableOrEnable }) {
+function CategoriesTableBody({ data, disableOrEnable, onEdit }) {
     return (
         data.map((item) => {
             return (
@@ -87,6 +94,9 @@ function CategoriesTableBody({ data, disableOrEnable }) {
                                 Enable
                             </button>
                         )}
+                        <button onClick={() => onEdit(item)} style={{ backgroundColor: '#007bff' }}>
+                            Edit
+                        </button>
                     </td>
                 </tr>
             );

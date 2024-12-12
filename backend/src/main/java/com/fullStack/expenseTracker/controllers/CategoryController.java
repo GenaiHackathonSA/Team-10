@@ -38,6 +38,12 @@ public class CategoryController {
         return categoryService.createCategory(request);
     }
 
+    @PutMapping("/update")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ResponseEntity<ApiResponseDto<?>> updateCategory(@RequestBody CreateCategoryRequest request) {
+        return categoryService.updateCategory(request);
+    }
+
 }
 
 

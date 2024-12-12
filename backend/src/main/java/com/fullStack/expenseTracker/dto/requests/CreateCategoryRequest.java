@@ -2,16 +2,21 @@
 package com.fullStack.expenseTracker.dto.requests;
 
 public class CreateCategoryRequest {
+    private int categoryId;
     private String categoryName;
     private int transactionTypeId;
     private boolean enabled;
 
-    public int getTransactionTypeId() {
-        return transactionTypeId;
+    public int getCategoryId() {
+        return categoryId;
     }
 
     public String getCategoryName() {
         return categoryName;
+    }
+
+    public int getTransactionTypeId() {
+        return transactionTypeId;
     }
 
     public boolean isEnabled() {

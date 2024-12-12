@@ -52,6 +52,25 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
+    public ResponseEntity<ApiResponseDto<?>> updateCategory(CreateCategoryRequest request) {
+        try {
+            Category category = getCategoryById(request.getCategoryId());
+            category.setCategoryName(request.getCategoryName());
+            category.setEnabled(request.isEnabled());
+            TransactionType transactionType = new TransactionType(request.getTransactionTypeId() == 1 ? ETransactionType.TYPE_EXPENSE : ETransactionType.TYPE_INCOME);
+            category.setTransactionType(transactionType);
+            categoryRepository.save(category);
+            return ResponseEntity.status(HttpStatus.OK).body(
+                    new ApiResponseDto<>(ApiResponseStatus.SUCCESS, HttpStatus.OK, "Category updated successfully!")
+            );
+        } catch (CategoryNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                    new ApiResponseDto<>(ApiResponseStatus.FAILED, HttpStatus.NOT_FOUND, "Category not found!")
+            );
+        }
+    }
+
+    @Override
     public boolean existsCategory(int id) {
         return categoryRepository.existsById(id);
     }

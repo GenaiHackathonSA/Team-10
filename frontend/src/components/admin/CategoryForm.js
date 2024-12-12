@@ -1,26 +1,37 @@
-// frontend/src/components/admin/CategoryForm.js
-
 import { useForm } from 'react-hook-form';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import AdminService from '../../services/adminService';
 import toast from 'react-hot-toast';
 
-function CategoryForm({ onSuccess }) {
+function CategoryForm({ onSuccess, category }) {
     const { register, handleSubmit, formState: { errors }, reset } = useForm();
     const [isSubmitting, setIsSubmitting] = useState(false);
 
+    useEffect(() => {
+        if (category) {
+            reset({
+                categoryName: category.categoryName,
+                transactionType: category.transactionType.transactionTypeId,
+                enabled: category.enabled
+            });
+        }
+    }, [category, reset]);
+
     const onSubmit = async (data) => {
         setIsSubmitting(true);
-        await AdminService.createCategory(data).then(
+        const requestData = { ...data, categoryId: category ? category.categoryId : null };
+        const serviceMethod = category ? AdminService.updateCategory : AdminService.createCategory;
+
+        await serviceMethod(requestData).then(
             (response) => {
                 if (response.data.status === 'SUCCESS') {
-                    toast.success('Category created successfully!');
+                    toast.success(`Category ${category ? 'updated' : 'created'} successfully!`);
                     reset();
                     onSuccess();
                 }
             },
             (error) => {
-                toast.error('Failed to create category: Try again later!');
+                toast.error(`Failed to ${category ? 'update' : 'create'} category: Try again later!`);
             }
         );
         setIsSubmitting(false);
@@ -39,8 +50,8 @@ function CategoryForm({ onSuccess }) {
             <div className="input-box">
                 <label>Transaction Type</label>
                 <select {...register('transactionType', { required: 'Transaction type is required' })}>
-                    <option value="EXPENSE">Expense</option>
-                    <option value="INCOME">Income</option>
+                    <option value="1">Expense</option>
+                    <option value="2">Income</option>
                 </select>
                 {errors.transactionType && <small>{errors.transactionType.message}</small>}
             </div>
@@ -50,7 +61,7 @@ function CategoryForm({ onSuccess }) {
             </div>
             <div className="input-box">
                 <button type="submit" className={isSubmitting ? 'button loading' : 'button'}>
-                    {isSubmitting ? 'Submitting...' : 'Create Category'}
+                    {isSubmitting ? 'Submitting...' : category ? 'Update Category' : 'Create Category'}
                 </button>
             </div>
         </form>
