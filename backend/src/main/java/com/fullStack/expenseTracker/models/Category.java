@@ -18,7 +18,7 @@ public class Category {
 
     private String categoryName;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "transactionTypeId")
     private TransactionType transactionType;
 

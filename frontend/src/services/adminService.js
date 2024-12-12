@@ -79,6 +79,16 @@ const disableOrEnableCategory = (categoryId) => {
     )
 }
 
+const createCategory= (categoryData) => {
+    return axios.post(
+        API_BASE_URL + '/category/create',
+        categoryData,
+        {
+            headers: AuthService.authHeader(),
+        }
+    )
+}
+
 const AdminService = {
     getAllTransactions,
     getAllUsers,
@@ -86,6 +96,7 @@ const AdminService = {
     getAllcategories,
     updatecategory,
     disableOrEnableCategory,
+    createCategory
 }
 
 export default AdminService;

@@ -1,5 +1,9 @@
 package com.fullStack.expenseTracker.services.impls;
 
+import com.fullStack.expenseTracker.dto.requests.CreateCategoryRequest;
+import com.fullStack.expenseTracker.enums.ETransactionType;
+import com.fullStack.expenseTracker.models.TransactionType;
+import com.fullStack.expenseTracker.repository.TransactionRepository;
 import com.fullStack.expenseTracker.services.CategoryService;
 import com.fullStack.expenseTracker.services.TransactionTypeService;
 import com.fullStack.expenseTracker.dto.reponses.ApiResponseDto;
@@ -21,6 +25,9 @@ public class CategoryServiceImpl implements CategoryService {
     private CategoryRepository categoryRepository;
 
     @Autowired
+    private TransactionRepository transactionRepository;
+
+    @Autowired
     private TransactionTypeService transactionTypeService;
 
     @Override
@@ -31,6 +38,16 @@ public class CategoryServiceImpl implements CategoryService {
                         HttpStatus.OK,
                         categoryRepository.findAll()
                 )
+        );
+    }
+
+    @Override
+    public ResponseEntity<ApiResponseDto<?>> createCategory(CreateCategoryRequest request) {
+        TransactionType transactionType = new TransactionType(request.getTransactionTypeId() == 1 ? ETransactionType.TYPE_EXPENSE : ETransactionType.TYPE_INCOME);
+        Category category = new Category(request.getCategoryName(), transactionType, request.isEnabled());
+        categoryRepository.save(category);
+        return ResponseEntity.status(HttpStatus.CREATED).body(
+                new ApiResponseDto<>(ApiResponseStatus.SUCCESS, HttpStatus.CREATED, "Category created successfully!")
         );
     }
 

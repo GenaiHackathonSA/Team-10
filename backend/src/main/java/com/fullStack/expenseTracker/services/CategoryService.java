@@ -1,6 +1,7 @@
 package com.fullStack.expenseTracker.services;
 
 import com.fullStack.expenseTracker.dto.reponses.ApiResponseDto;
+import com.fullStack.expenseTracker.dto.requests.CreateCategoryRequest;
 import com.fullStack.expenseTracker.exceptions.CategoryNotFoundException;
 import com.fullStack.expenseTracker.exceptions.CategoryServiceLogicException;
 import com.fullStack.expenseTracker.models.Category;
@@ -17,4 +18,6 @@ public interface CategoryService {
     Category getCategoryById(int id) throws CategoryNotFoundException;
 
     ResponseEntity<ApiResponseDto<?>> enableOrDisableCategory(int categoryId) throws CategoryServiceLogicException, CategoryNotFoundException;
+
+    ResponseEntity<ApiResponseDto<?>> createCategory(CreateCategoryRequest request);
 }
