@@ -5,9 +5,10 @@ import useExpenseVsIncomeSummary from '../../hooks/useExpenseVsIncomeSummary';
 import Info from "../../components/utils/Info";
 import Container from "../../components/utils/Container";
 import toast, { Toaster } from "react-hot-toast";
+import { useMemo } from "react";
 
 function UserStatistics() {
-    const months = getMonths()
+    const months = useMemo(() => getMonths(), []);
     const [data, isLoading, isError] = useExpenseVsIncomeSummary(months)
 
     return (
