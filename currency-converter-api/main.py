@@ -4,6 +4,7 @@ from typing import Dict
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 
 
 @asynccontextmanager
@@ -39,6 +40,15 @@ async def lifespan(app: FastAPI):
 
 # Create the FastAPI app with the lifespan context
 app = FastAPI(lifespan=lifespan)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Allow all origins
+    allow_credentials=True,
+    allow_methods=["*"],  # Allow all HTTP methods
+    allow_headers=["*"],  # Allow all headers
+)
+
 
 @app.get("/currencies", response_model=Dict[str, str])
 async def list_currencies():

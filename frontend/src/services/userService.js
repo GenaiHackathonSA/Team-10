@@ -1,6 +1,6 @@
 import axios from "axios";
 import AuthService from "./auth.service";
-import API_BASE_URL from "./auth.config";
+import API_BASE_URL, {PYTHON_API_BASE_URL} from "./auth.config";
 
 
 const get_categories = () => {
@@ -303,6 +303,10 @@ const skipSavedTransaction = (id) => {
     )
 }
 
+const get_exchange_rates = () => {
+    return axios.get(`${PYTHON_API_BASE_URL}/conversion-rates`);
+}
+
 const UserService = {
     get_categories,
     add_transaction ,
@@ -326,6 +330,7 @@ const UserService = {
     updateSavedTransaction,
     deleteSavedTransaction,
     addSavedTransaction,
-    skipSavedTransaction
+    skipSavedTransaction,get_exchange_rates
+
 }
 export default UserService;
